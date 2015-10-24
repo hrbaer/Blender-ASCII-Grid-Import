@@ -3,7 +3,7 @@
 
 # Magnus Heitzler hmagnus@ethz.ch
 # Hans Rudolf Bär  hbaer@ethz.ch
-# 14/08/2015
+# 24/10/2015
 # Institute of Cartography and Geoinformation
 # ETH Zurich
 
@@ -11,7 +11,7 @@ bl_info = {
   "name": "Import ASCII Grid",
   "author": " M. Heitzler and H. R. Baer",
   "blender": (2,6,2),
-  "version": (0,0,1),
+  "version": (0,0,2),
   "location": "File>Import-Export",
   "description": "Import meshes in ASCII Grid file format",
   "category": "Import-Export"
@@ -60,9 +60,9 @@ class ImportAsciiGrid(bpy.types.Operator):
 
     # Create vertices
     index = 0;
-    for r in range(0, rows):
+    for r in range(rows - 1, -1, -1):
       for c in range(0, cols):
-        vertices.append((r, c, float(data[index])))
+        vertices.append((c, r, float(data[index])))
         index += 1
 
     # Construct faces
