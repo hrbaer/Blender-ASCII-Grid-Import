@@ -4,14 +4,15 @@
 # Magnus Heitzler hmagnus@ethz.ch
 # Hans Rudolf Bär  hbaer@ethz.ch
 # 24/10/2015
+# 25/11/2016 Models now correctly centered
 # Institute of Cartography and Geoinformation
 # ETH Zurich
 
 bl_info = {
   "name": "Import ASCII Grid",
   "author": " M. Heitzler and H. R. Baer",
-  "blender": (2,6,2),
-  "version": (0,0,2),
+  "blender": (2,70,0),
+  "version": (1,0,0),
   "location": "File>Import-Export",
   "description": "Import meshes in ASCII Grid file format",
   "category": "Import-Export"
@@ -49,10 +50,8 @@ class ImportAsciiGrid(bpy.types.Operator):
     cellsize = float(content[4].split()[1])
 
     # Mesh scaling
-    size = math.sqrt(float((cols - 1) * (rows - 1)))
-    scale_cols = SCALE * (size / (rows - 1))
-    scale_rows = SCALE * (size / (cols - 1))
-    scale_vals = scale_cols / (cellsize * float(cols - 1))
+    scale_xy = SCALE / float(cols - 1)
+    scale_z = SCALE / (cellsize * float(cols - 1))
 
     data = " ".join(content[FILEHEADERLENGTH:]).split()
     vertices = []
@@ -91,8 +90,8 @@ class ImportAsciiGrid(bpy.types.Operator):
     ob.select = True
 
     # Transform mesh
-    bpy.ops.transform.resize(value = (scale_rows / (rows - 1), scale_cols / (cols - 1), scale_vals))
-    bpy.ops.transform.translate(value = (-0.5 * scale_rows, -0.5 * scale_cols, 0))
+    bpy.ops.transform.resize(value = (scale_xy, scale_xy, scale_z))
+    bpy.ops.transform.translate(value = (-scale_xy * (cols - 1) / 2.0, -scale_xy * (rows - 1) / 2.0, 0))
 
     # Setting data
     me.from_pydata(vertices, [], faces)
