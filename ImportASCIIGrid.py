@@ -5,13 +5,14 @@
 # Hans Rudolf Bär  hbaer@ethz.ch
 # 24/10/2015
 # 25/11/2016 Models now correctly centered
+# 22/10/2019 Ported to blender 2.80
 # Institute of Cartography and Geoinformation
 # ETH Zurich
 
 bl_info = {
   "name": "Import ASCII Grid",
   "author": " M. Heitzler and H. R. Baer",
-  "blender": (2,70,0),
+  "blender": (2,80,0),
   "version": (1,0,0),
   "location": "File>Import-Export",
   "description": "Import meshes in ASCII Grid file format",
@@ -84,10 +85,10 @@ class ImportAsciiGrid(bpy.types.Operator):
     ob.show_name = True
 
     # Link object to scene and make active
-    scn = bpy.context.scene
-    scn.objects.link(ob)
-    scn.objects.active = ob
-    ob.select = True
+    col = bpy.context.collection
+    col.objects.link(ob)
+    bpy.context.view_layer.objects.active = ob
+    ob.select_set(True)
 
     # Transform mesh
     bpy.ops.transform.resize(value = (scale_xy, scale_xy, scale_z))
@@ -108,14 +109,16 @@ class ImportAsciiGrid(bpy.types.Operator):
 def menu_func(self, context):
   self.layout.operator(ImportAsciiGrid.bl_idname, text="ASCII Grid (.asc)")
 
+
 def register():
-  bpy.utils.register_module(__name__)
-  bpy.types.INFO_MT_file_import.append(menu_func)
-
+    bpy.utils.register_class(ImportAsciiGrid)
+    bpy.types.TOPBAR_MT_file_import.append(menu_func)
+    
 def unregister():
-  bpy.utils.uregister_class(__name__)
-  bpy.types.INFO_MT_file_import.remove(menu_func)
-
-
+    bpy.utils.unregister_class(ImportAsciiGrid)
+    bpy.types.TOPBAR_MT_file_import.remove(menu_func)
+  
 if __name__ == "__main__":
   register()
+
+
