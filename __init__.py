@@ -10,18 +10,17 @@
 # ETH Zurich
 
 bl_info = {
-  "name": "Import ASCII Grid",
+  "name": "Import ASCII (.asc)",
   "author": " M. Heitzler and H. R. Baer",
   "blender": (2,80,0),
-  "version": (1,0,0),
-  "location": "File > Import > ASCII Grid (.asc)",
+  "version": (1,0, 1),
+  "location": "File > Import > ASCII (.asc)",
   "description": "Import meshes in ASCII Grid file format",
   "warning": "",
   "wiki_url": "https://github.com/hrbaer/Blender-ASCII-Grid-Import",
   "tracker_url": "https://github.com/hrbaer/Blender-ASCII-Grid-Import/issues",
   "support": "COMMUNITY",
-  "category": "Import-Export", 
-    
+  "category": "Import-Export",
 }
 
 import bpy
@@ -31,8 +30,8 @@ from bpy_extras.io_utils import ImportHelper
 
 _isBlender280 = bpy.app.version[1] >= 80
 
-class ImportAsciiGrid(bpy.types.Operator, ImportHelper):
-  bl_idname = "import_grid_format.asc"
+class ImportGrid(bpy.types.Operator, ImportHelper):
+  bl_idname = "import_scene.asc"
   bl_label = "Import ASCII Grid"
   bl_options = {'PRESET'}
 
@@ -125,18 +124,18 @@ class ImportAsciiGrid(bpy.types.Operator, ImportHelper):
 
 
 def menu_func(self, context):
-  self.layout.operator(ImportAsciiGrid.bl_idname, text="ASCII Grid (.asc)")
+  self.layout.operator(ImportGrid.bl_idname, text="ASCII Grid (.asc)")
 
 
 def register():
-    bpy.utils.register_class(ImportAsciiGrid)
+    bpy.utils.register_class(ImportGrid)
     if _isBlender280:
         bpy.types.TOPBAR_MT_file_import.append(menu_func)
     else:
         bpy.types.INFO_MT_file_import.append(menu_func)
 
 def unregister():
-    bpy.utils.unregister_class(ImportAsciiGrid)
+    bpy.utils.unregister_class(ImportGrid)
     if _isBlender280:
         bpy.types.TOPBAR_MT_file_import.remove(menu_func)
     else:
