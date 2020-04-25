@@ -189,6 +189,7 @@ class ImportGrid(bpy.types.Operator, ImportHelper):
             index += 1
 
         # Create mesh
+        
         name = os.path.splitext(os.path.basename(filename))[0]
         me = bpy.data.meshes.new(name)
         ob = bpy.data.objects.new(name, me)
@@ -196,8 +197,10 @@ class ImportGrid(bpy.types.Operator, ImportHelper):
         ob.show_name = True
 
         # Link object to scene and make active
+        
         col = bpy.context.collection
         col.objects.link(ob)
+        bpy.ops.object.select_all(action='DESELECT')
         bpy.context.view_layer.objects.active = ob
         ob.select_set(True)
 
