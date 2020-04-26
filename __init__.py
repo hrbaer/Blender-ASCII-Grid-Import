@@ -18,6 +18,7 @@
 
 import pyproj
 import numpy
+import bmesh
 from bpy_extras.io_utils import ImportHelper
 import math
 import os
@@ -113,6 +114,8 @@ class ImportGrid(bpy.types.Operator, ImportHelper):
         xllcorner = float(content[2].split()[1])
         yllcorner = float(content[3].split()[1])
         cellsize = float(content[4].split()[1])
+        nodata = float(content[5].split()[1])
+
 
         #
         # georef can be from center, or corner, based on
@@ -173,8 +176,8 @@ class ImportGrid(bpy.types.Operator, ImportHelper):
         index = 0
         for r in range(rows, -1, -1):
             for c in range(0, cols+1):
-                vertices.append((c*cellsize, r*cellsize, float(arr[index])))
-                index += 1
+                    vertices.append((c*cellsize, r*cellsize, float(arr[index])))
+                    index += 1
 
         # Construct faces
         index = 0
@@ -195,6 +198,9 @@ class ImportGrid(bpy.types.Operator, ImportHelper):
         ob = bpy.data.objects.new(name, me)
         ob.location = (0, 0, 0)
         ob.show_name = True
+
+
+        
 
         # Link object to scene and make active
         
@@ -234,6 +240,13 @@ class ImportGrid(bpy.types.Operator, ImportHelper):
 
         # Setting data
         me.from_pydata(vertices, [], faces)
+
+        ## delete nodata verts ## experimental work
+        bm = bmesh.new()
+        bm.from_mesh(me)
+        verts = [v for v in bm.verts if v.co[2] == nodata]
+        bmesh.ops.delete(bm, geom=verts, context="VERTS")
+        bm.to_mesh(me)
 
         # Update mesh with new data
         me.update()
