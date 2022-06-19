@@ -2,18 +2,19 @@
 # Installs import menu entry in Blender
 
 # Magnus Heitzler hmagnus@ethz.ch
-# Hans Rudolf Bär  hbaer@ethz.ch
+# Hans Rudolf Bär  hansruedi.baer@bluewin.ch
 # 24/10/2015
 # 25/11/2016 Models now correctly centered
-# 22/10/2019 Ported to blender 2.80
+# 22/10/2019 Ported to Blender 2.80
+# 19/06/2022 Ported to Blender 3.2
 # Institute of Cartography and Geoinformation
 # ETH Zurich
 
 bl_info = {
   "name": "Import ASCII (.asc)",
   "author": " M. Heitzler and H. R. Baer",
-  "blender": (2,80,0),
-  "version": (1,0, 1),
+  "blender": (3, 2, 0),
+  "version": (1, 0, 2),
   "location": "File > Import > ASCII (.asc)",
   "description": "Import meshes in ASCII Grid file format",
   "warning": "",
@@ -27,8 +28,6 @@ import bpy
 import os
 import math
 from bpy_extras.io_utils import ImportHelper
-
-_isBlender280 = bpy.app.version[1] >= 80
 
 class ImportGrid(bpy.types.Operator, ImportHelper):
   bl_idname = "import_scene.asc"
@@ -129,17 +128,11 @@ def menu_func(self, context):
 
 def register():
     bpy.utils.register_class(ImportGrid)
-    if _isBlender280:
-        bpy.types.TOPBAR_MT_file_import.append(menu_func)
-    else:
-        bpy.types.INFO_MT_file_import.append(menu_func)
+    bpy.types.TOPBAR_MT_file_import.append(menu_func)
 
 def unregister():
     bpy.utils.unregister_class(ImportGrid)
-    if _isBlender280:
-        bpy.types.TOPBAR_MT_file_import.remove(menu_func)
-    else:
-        bpy.types.INFO_MT_file_import.remove(menu_func)
+    bpy.types.TOPBAR_MT_file_import.remove(menu_func)
   
 if __name__ == "__main__":
   register()
